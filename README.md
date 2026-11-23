@@ -9,7 +9,8 @@ los ciclistas de la Avenida Boyacá encuentren talleres, puntos de hidratación,
 información. Todo parte del archivo [`puntos.mock.js`](materia-prima/puntos.mock.js), y el objetivo
 es que otro desarrollador pueda construir la app sin inventar procesos ni estructura.
 
-📄 **Documento completo: [ANALISIS_Y_DISENO.md](ANALISIS_Y_DISENO.md)**
+📄 **Documento completo: [ANALISIS_Y_DISENO.md](ANALISIS_Y_DISENO.md)** · también en
+**[Word](BiciPuntos_Analisis_y_Diseno.docx)** (37 páginas, con diagramas y mockups)
 
 ## Dónde está cada entregable
 
@@ -58,6 +59,7 @@ preguntas de la guía.
 Evidencia2_BiciPuntos/
 ├── README.md                 Este índice
 ├── ANALISIS_Y_DISENO.md      El documento completo de análisis y diseño
+├── BiciPuntos_Analisis_y_Diseno.docx   El mismo documento en Word
 ├── diagramas/                13 diagramas y mockups en PNG
 ├── materia-prima/
 │   └── puntos.mock.js        Archivo entregado por el instructor (sin cambios)

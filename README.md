@@ -28,8 +28,8 @@ es que otro desarrollador pueda construir la app sin inventar procesos ni estruc
 | 11 | MVP y matriz MoSCoW | 8 | — |
 | 12 | Plan de implementación por etapas | 9 | — |
 
-La sección 10 del documento es la **reflexión final**, que según la guía se responde de forma
-individual: tiene las preguntas con ideas guía y un espacio para cada respuesta.
+La sección 10 del documento es la **reflexión final individual**, con las respuestas a las 7
+preguntas de la guía.
 
 ## Vista previa
 

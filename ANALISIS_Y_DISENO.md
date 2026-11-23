@@ -614,26 +614,34 @@ Las funcionalidades Could de la sección 8 van después de E9, en una segunda it
 
 ## 10. Reflexión final (individual)
 
-La guía pide responder esta parte **individualmente**. Debajo de cada pregunta hay ideas de este análisis para apoyarte; la respuesta debe ir con tus palabras y tu experiencia.
+Respuestas a las 7 preguntas de reflexión de la guía, a partir de las decisiones tomadas en este análisis.
 
-1. **¿Por qué es importante analizar los datos antes de programar?**
-   - Aquí el análisis mostró que las categorías vienen sin tilde, que el icono depende de la categoría y que `ubicacion` es un objeto aparte. Descubrirlo programando habría obligado a rehacer componentes.
-   - Respuesta:
-2. **¿Qué problemas aparecen si toda la lógica está en un solo componente?**
-   - Piensa en un archivo que consulta, filtra, selecciona y dibuja: difícil de leer, de probar y de cambiar sin romper algo.
-   - Respuesta:
+1. **¿Por qué es importante analizar los datos antes de comenzar a programar?**
+
+   Porque los datos deciden gran parte del diseño. Al revisar `puntos.mock.js` encontré cosas que habría descubierto tarde si hubiera empezado a programar: las categorías vienen sin tilde (`hidratacion`), así que necesitaba un catálogo para mostrarlas bien; el icono depende de la categoría; las coordenadas vienen agrupadas en `ubicacion`; y la respuesta trae un sobre (`status`, `mensaje`, `error`) que alguien tiene que interpretar antes de mostrar los puntos. Programando de una vez, seguramente habría puesto esas validaciones dentro de los componentes y después habría tenido que rehacerlos. El análisis también me mostró qué funcionalidades tienen sentido con estos datos (mapa, filtro por categoría, detalle) y cuáles no (rutas, cuentas de usuario), y eso me ayudó a definir el MVP sin inventar requisitos.
+2. **¿Qué problemas podrían aparecer si toda la lógica se implementa dentro de un único componente?**
+
+   Un componente que consulta, valida, filtra, guarda la selección y dibuja el mapa sería muy largo y difícil de entender. Cualquier cambio, por ejemplo pasar del mock a la API, obligaría a tocar el mismo archivo donde está la interfaz, con el riesgo de dañar algo que ya funcionaba. No se podría reutilizar el filtro entre el mapa y la lista, habría lógica repetida y sería difícil encontrar errores porque todo estaría mezclado. Tampoco se podría trabajar bien en equipo, porque dos personas no podrían modificar partes distintas sin chocar.
 3. **¿Qué ventajas tiene separar servicios, hooks y componentes?**
-   - Cambiar el mock por la API real solo toca el servicio; el mapa y la lista usan el mismo filtro sin repetirlo.
-   - Respuesta:
-4. **¿Por qué definir la comunicación entre componentes antes de desarrollarlos?**
-   - Decidir antes que la pantalla guarda el id seleccionado evita que dos componentes tengan copias distintas del mismo dato.
-   - Respuesta:
-5. **¿Qué decisiones técnicas fueron las más difíciles?**
-   - Candidatas: enviar el id o el objeto al seleccionar, qué hacer con el detalle al cambiar de filtro, y si la lista entra al MVP.
-   - Respuesta:
-6. **¿Qué problemas de mantenimiento evita una buena arquitectura?**
-   - Lo que pasa cuando cambia la forma de los datos, cuando se agrega una categoría o cuando llega la API real.
-   - Respuesta:
+
+   Cada capa tiene un solo motivo para cambiar: el servicio sabe de dónde vienen los datos, los hooks guardan el estado y aplican las reglas, y los componentes solo dibujan. En BiciPuntos eso significa que cambiar el mock por la API real solo toca `puntosService` y su configuración, que el mapa y la lista usan exactamente el mismo resultado del filtro, y que las reglas (filtrar, buscar por id, validar coordenadas) se pueden probar sin abrir la app. Además, el trabajo se puede repartir: una persona hace la lista y los filtros mientras otra hace el mapa.
+4. **¿Por qué es importante definir la comunicación entre componentes antes de desarrollarlos?**
+
+   Porque si no se decide antes quién guarda cada dato, es fácil terminar con copias distintas del mismo estado. Definir que `PantallaPrincipal` guarda el id seleccionado y que los hijos solo avisan con funciones evita, por ejemplo, que el marcador y el detalle tengan cada uno su propia idea de cuál punto está seleccionado. Al diseñar la comunicación también aparecieron casos que no se ven a simple vista, como qué pasa con el detalle abierto si se cambia el filtro (RN13). Con los props y las funciones definidos desde el diseño, al programar solo hay que seguir los diagramas.
+5. **¿Qué decisiones técnicas fueron las más difíciles de tomar?**
+   - Enviar el id o el objeto completo al seleccionar un punto. Elegí el id porque es único y pequeño, y así el objeto siempre se busca en la colección original, que es la única fuente de verdad.
+   - Qué hacer con el detalle cuando cambia el filtro. Decidí cerrarlo solo si el punto ya no pertenece a la nueva categoría.
+   - Si la lista entraba al MVP. La dejé como Should porque el mapa cubre el uso principal, aunque es importante para web y accesibilidad.
+   - La pantalla "sin resultados": con el archivo actual ninguna categoría queda vacía, pero la diseñé igual pensando en los datos que traerá la API real.
+6. **¿Qué problemas de mantenimiento podrían evitarse con una buena arquitectura?**
+
+   Cuando llegue la API real, solo cambia el servicio. Si se agrega una categoría nueva, se añade al catálogo y los chips, los colores y el filtro la toman sin tocar los componentes. Si cambia el diseño de las tarjetas, solo se modifica `TarjetaPunto`. Si la respuesta trae datos incompletos, el servicio los valida en un solo lugar, en vez de que cada pantalla falle de una forma distinta. Y es más fácil encontrar un error, porque cada regla tiene un lugar definido.
 7. **¿Qué información adicional necesitarías para pasar del mock a una API REST real?**
-   - URL y método del endpoint, autenticación, formato de errores y códigos HTTP, paginación, límites de uso y si el servidor puede filtrar por categoría.
-   - Respuesta:
+   - La URL del endpoint y su método (por ejemplo, `GET /puntos`).
+   - Si requiere autenticación (token o API key) y cómo se envía.
+   - El formato exacto de la respuesta y si es igual al del mock (`status`, `mensaje`, `error`, `data`).
+   - Los códigos HTTP que devuelve y cómo vienen los errores.
+   - Si hay paginación cuando existan muchos puntos.
+   - Si el servidor permite filtrar por categoría (por ejemplo, `?categoria=hidratacion`) o hay que filtrar en la app.
+   - El tiempo de respuesta esperado y los límites de uso, para definir el tiempo máximo de espera.
+   - Si las categorías y los iconos los define el servidor o la app.
